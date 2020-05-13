@@ -66,7 +66,7 @@ ${prefix}card-lookup: looks for string matches in titles and card text`;
       }
     }
     return;
-  } else if (command === "deck-image") {
+  } else if (command === "deck-image" || message.startsWith("!deck")) {
     /*
     deck image
     */
@@ -89,6 +89,10 @@ ${prefix}card-lookup: looks for string matches in titles and card text`;
 });
 
 client.login(token);
+
+function deck_translate(code) {
+
+}
 
 function card_lookup(args) {
   var string = args.join(" ").toLowerCase();
