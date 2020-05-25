@@ -42,6 +42,8 @@ client.on("message", async (message) => {
       var replyString = `Found ${successes.length} sets of card matches for`;
       if (successes.length < 1) {
         replyString = replyString.concat(" your queries.");
+      } else if (successes.length === 1) {
+        replyString = `Found a match for ${successes[0]}`;
       } else {
         for (success of successes) {
           replyString = replyString.concat(` ${success},`);
