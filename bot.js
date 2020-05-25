@@ -25,7 +25,7 @@ client.on("message", async (message) => {
 
   // see if message has card searches in it
   if (!message.content.startsWith(prefix)) {
-    const reg = /\{.*?\}/g;
+    const reg = /\[.*?\]/g;
     const found = message.content.match(reg);
     if (found !== null) {
       var results = [];
