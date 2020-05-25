@@ -16,11 +16,52 @@ const data = data1.concat(data2);
 
 client.on("ready", () => {
   console.log("I am ready!");
+  client.user.setActivity("for +deck CODE", { type: "WATCHING" });
 });
 
-client.on("message", (message) => {
-  // ignore non-prefixed commands, and ignore bots
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+client.on("message", async (message) => {
+  // ignore bots
+  if (message.author.bot) return;
+
+  // see if message has card searches in it
+  if (!message.content.startsWith(prefix)) {
+    const reg = /\{.*?\}/g;
+    const found = message.content.match(reg);
+    if (found !== null) {
+      var results = [];
+      var successes = [];
+      for (var string of found) {
+        const str = string.slice(1, -1);
+        const cards = find_card([str]);
+        if (cards.length > 0) {
+          const embeds = short_results(cards);
+          results.push(embeds);
+          successes.push(str);
+        }
+      }
+      var replyString = `Found ${successes.length} sets of card matches for`;
+      if (successes.length < 1) {
+        replyString = replyString.concat(" your queries.");
+      } else {
+        for (success of successes) {
+          replyString = replyString.concat(` ${success},`);
+        }
+        replyString = replyString.slice(0, -1);
+        replyString = replyString.concat(".");
+      }
+      message.reply(replyString);
+      for (result of results) {
+        var index = 0;
+        await message.channel.send(result[index]);
+        if (result.length > 1) {
+          await message.channel.send(
+            "For associated cards, use +card *card name*"
+          );
+        }
+      }
+    }
+    return;
+  }
 
   const args = message.content.slice(prefix.length).split(" ");
   const command = args.shift().toLowerCase();
@@ -28,9 +69,13 @@ client.on("message", (message) => {
   /*
   fetch-commands
   */
-  if (command === "fetch-commands") {
-    let response_string = `The commands are as follows:\n
-${prefix}card-lookup: looks for string matches in titles and card text`;
+  if (command === "commands") {
+    let response_string = `The commands are as follows:
+\n\`[card name]\`: -(Usable in any part of a message, multiple times), shows the matching cards, if any
+\n\`${prefix}card-lookup overwhelm\`: -looks for basic string matches in titles or card text or keywords (multiple keywords must be in the same order as on the card)
+\n\`${prefix}card Draven\`: -shows the exact card, use reactions to view associated cards
+\n\`${prefix}deck-image DECKCODE\`: -shows an image of the deck, using https://decks.wizra.cc
+\n\`${prefix}deck DECKCODE\`: -shows a simplified decklist of the cards, sorted by region then cost then name (WIP: currently same as deck-image)`;
     return message.channel.send(response_string);
   } else if (command === "card-lookup" || command === "card-search") {
     /*
@@ -41,13 +86,38 @@ ${prefix}card-lookup: looks for string matches in titles and card text`;
       message.channel.send("No results, please try another search");
     } else {
       var embeds = long_results(cards);
-      if (embeds.length > 5) {
+      if (embeds.length > 100) {
         message.channel.send(
           "Too many results, please use a longer search phrase."
         );
       } else {
-        for (var embed of embeds) {
-          message.channel.send(embed);
+        var index = 0;
+        const thisMessage = await message.channel.send(embeds[index]);
+        if (embeds.length > 1) {
+          await thisMessage.react("◀️");
+          await thisMessage.react("▶️");
+          const filter = (reaction, user) => {
+            return (
+              user.id === message.author.id &&
+              (reaction.emoji.name === "▶️" || reaction.emoji.name === "◀️")
+            );
+          };
+          const collector = thisMessage.createReactionCollector(filter, {
+            time: 600000,
+          });
+          collector.on("collect", (reaction, user) => {
+            if (reaction.emoji.name === "▶️") {
+              if (index < embeds.length - 1) {
+                index++;
+                thisMessage.edit(embeds[index]);
+              }
+            } else if (reaction.emoji.name === "◀️") {
+              if (index > 0) {
+                index--;
+                thisMessage.edit(embeds[index]);
+              }
+            }
+          });
         }
       }
     }
@@ -61,12 +131,46 @@ ${prefix}card-lookup: looks for string matches in titles and card text`;
       message.channel.send("No results, plese try another card");
     } else {
       var embeds = short_results(cards);
-      for (var embed of embeds) {
-        message.channel.send(embed);
+      var replyMessage = "";
+      if (embeds.length > 1) {
+        replyMessage = `There are ${embeds.length} associated cards with \
+this search, use the ◀️▶️ buttons to navigate through the results after \
+the buttons appear. Click again to "reset" the button.`;
+      } else {
+        replyMessage = "There is only one card with this name.";
+      }
+      await message.channel.send(replyMessage);
+      var index = 0;
+      const thisMessage = await message.channel.send(embeds[index]);
+      if (embeds.length > 1) {
+        await thisMessage.react("◀️");
+        await thisMessage.react("▶️");
+        const filter = (reaction, user) => {
+          return (
+            user.id === message.author.id &&
+            (reaction.emoji.name === "▶️" || reaction.emoji.name === "◀️")
+          );
+        };
+        const collector = thisMessage.createReactionCollector(filter, {
+          time: 600000,
+        });
+        collector.on("collect", (reaction, user) => {
+          if (reaction.emoji.name === "▶️") {
+            if (index < embeds.length - 1) {
+              index++;
+              thisMessage.edit(embeds[index]);
+            }
+          } else if (reaction.emoji.name === "◀️") {
+            if (index > 0) {
+              index--;
+              thisMessage.edit(embeds[index]);
+            }
+          }
+        });
       }
     }
     return;
-  } else if (command === "deck-image" || message.startsWith("!deck")) {
+  } else if (command === "deck-image" || command === "deck") {
     /*
     deck image
     */
@@ -90,9 +194,7 @@ ${prefix}card-lookup: looks for string matches in titles and card text`;
 
 client.login(token);
 
-function deck_translate(code) {
-
-}
+function deck_translate(code) {}
 
 function card_lookup(args) {
   var string = args.join(" ").toLowerCase();
@@ -100,7 +202,8 @@ function card_lookup(args) {
   for (var card of data) {
     if (
       card.descriptionRaw.toLowerCase().includes(string) ||
-      card.name.toLowerCase().includes(string)
+      card.name.toLowerCase().includes(string) ||
+      card.keywords.join(" ").toLowerCase().includes(string)
     ) {
       matches.push(card);
     }
@@ -139,9 +242,9 @@ function find_card(args) {
 function long_results(cards) {
   var embeds = [];
   var freshEmbed = new Discord.MessageEmbed()
-    .setTitle("Search Results")
+    .setTitle("Search Results 1")
     .setFooter(
-      `To view an individual card, use ${prefix}card or ${prefix}find-card`
+      `To view an individual card, use ${prefix}card, \nuse reactions to navigate multiple pages \n(un-react to reuse buttons, if no buttons present, only 1 page)`
     );
   var s = " ";
   for (var card of cards) {
@@ -152,7 +255,7 @@ function long_results(cards) {
 
     s += newLine;
 
-    if (s.length + newLine.length >= 1000) {
+    if (s.length + newLine.length >= 600) {
       freshEmbed.addFields({
         name: "[Rarity] __**Cost**__ Name",
         value: s,
@@ -164,7 +267,7 @@ function long_results(cards) {
       freshEmbed = new Discord.MessageEmbed()
         .setTitle(`Search Results ${embeds.length + 1}`)
         .setFooter(
-          `To view an individual card, use ${prefix}card or ${prefix}find-card`
+          `To view an individual card, use ${prefix}card, \nuse reactions to navigate multiple pages \n(un-react to reuse buttons)`
         );
     }
   }
@@ -248,12 +351,15 @@ function rarity_to_emoji(rarity) {
 }
 
 function sort_cards(a, b, string = "") {
-  if (a.name.toLowerCase() === string && b.name.toLowerCase() !== string) {
+  if (a.name.toLowerCase() === b.name.toLowerCase()) {
+    return a.cardCode > b.cardCode ? 1 : -1;
+  } else if (
+    a.name.toLowerCase() === string &&
+    b.name.toLowerCase() !== string
+  ) {
     return -1;
   } else if (b.name.toLowerCase() === string && a.name.toLowerCase !== string) {
     return 1;
-  } else if (a.name === b.name) {
-    return a.cardCode > b.cardCode ? 1 : -1;
   } else {
     return a.name > b.name ? 1 : -1;
   }
@@ -261,24 +367,20 @@ function sort_cards(a, b, string = "") {
 
 async function fetchImage(code) {
   let image = "";
-  let link = "";
   let valid = true;
 
   if (fs.existsSync(`${__dirname}/${code}.png`)) {
-    link = `https://decks.wizra.cc/${code}`;
     image = `${__dirname}/${code}.png`;
   } else {
     /* enable this when testing on windows
-
-    */
     const browser = await puppeteer.launch({
       ignoreDefaultArgs: ["--disable-extensions"],
-    });
-    /* enable this on production
+    });*/
+    /* enable this on production */
     const browser = await puppeteer.launch({
       executablePath: "chromium-browser",
     });
-    */
+    /* */
     const page = await browser.newPage();
     await page.setViewport({
       width: 1000,
@@ -305,7 +407,6 @@ async function fetchImage(code) {
           height: 31 * rect.cardCount,
         },
       });
-      link = `https://decks.wizra.cc/${code}`;
       image = `${__dirname}/${code}.png`;
     } else {
       valid = false;
