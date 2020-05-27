@@ -100,7 +100,7 @@ client.on("message", async (message) => {
           await thisMessage.react("▶️");
           const filter = (reaction, user) => {
             return (
-              user.id === message.author.id &&
+              user.id !== client.user.id &&
               (reaction.emoji.name === "▶️" || reaction.emoji.name === "◀️")
             );
           };
@@ -149,7 +149,7 @@ the buttons appear. Click again to "reset" the button.`;
         await thisMessage.react("▶️");
         const filter = (reaction, user) => {
           return (
-            user.id === message.author.id &&
+            user.id !== client.user.id &&
             (reaction.emoji.name === "▶️" || reaction.emoji.name === "◀️")
           );
         };
