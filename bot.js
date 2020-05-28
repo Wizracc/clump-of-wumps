@@ -41,7 +41,7 @@ client.on("message", async (message) => {
       }
       var replyString = `Found ${successes.length} sets of card matches for`;
       if (successes.length < 1) {
-        replyString = replyString.concat(" your queries.");
+        replyString = "";
       } else if (successes.length === 1) {
         replyString = `Found a match for ${successes[0]}`;
       } else {
@@ -51,7 +51,7 @@ client.on("message", async (message) => {
         replyString = replyString.slice(0, -1);
         replyString = replyString.concat(".");
       }
-      message.reply(replyString);
+      if (replyString !== "") message.reply(replyString);
       for (result of results) {
         var index = 0;
         await message.channel.send(result[index]);
