@@ -6,8 +6,8 @@ const {
   short_results,
   card_lookup,
   long_results,
-  fetch_image,
-  deck_translate,
+  send_deck_image,
+  quick_deck,
 } = require("./helpers");
 
 client.on("ready", () => {
@@ -172,23 +172,11 @@ the buttons appear. Click again to "reset" the button.`;
     /*
     deck image
     */
-    message.channel.send("Fetching deck image...");
-    fetch_image(args[0]).then((image) => {
-      if (image) {
-        var link = `https://decks.wizra.cc/${args[0]}`;
-        const embed = new Discord.MessageEmbed()
-          .setTitle("decks.wizra.cc")
-          .setURL(link)
-          .attachFiles([image])
-          .setImage(`attachment://${args[0]}.png`);
-        message.channel.send(embed);
-      } else {
-        message.channel.send("Not a valid deck code");
-      }
-    });
+    send_deck_image(args[0], message);
     return;
   } else if (command === "deck") {
-    const embeds = deck_translate(args[0]);
+    const embeds = quick_deck(args[0]);
+    message.channel.send(embeds[0]);
   }
 });
 

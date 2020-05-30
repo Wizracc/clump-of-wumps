@@ -15,7 +15,168 @@ const data2 = JSON.parse(raw_data_set2);
 const data = data1.concat(data2);
 
 function deck_translate(code) {
-  const rawDeck = DeckEncoder.decode(code);
+  try {
+    const rawDeck = DeckEncoder.decode(code);
+    var deck = {
+      regions: {
+        bilgewater: [],
+        demacia: [],
+        freiljord: [],
+        ionia: [],
+        noxus: [],
+        piltoverzaun: [],
+        shadowisles: [],
+      },
+      types: {
+        champion: [],
+        unit: [],
+        spell: [],
+      },
+    };
+    for (const card of rawDeck) {
+      const raw = { ...data.find((o) => o.cardCode === card.code) };
+      const cardInfo = {
+        region: raw.regionRef,
+        name: raw.name,
+        cost: raw.cost,
+        count: card.count,
+        code: raw.cardCode,
+        type: raw.supertype === "Champion" ? "Champion" : raw.type,
+        rarity: raw.rarity.toLowerCase(),
+      };
+      deck.regions[cardInfo.region.toLowerCase()].push(cardInfo);
+      deck.types[cardInfo.type.toLowerCase()].push(cardInfo);
+    }
+    return deck;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+function quick_deck(code) {
+  const data = quick_deck_data(code);
+  if (data !== null) {
+    var embeds = [];
+    var regionEmbed = new Discord.MessageEmbed()
+      .setTitle(data[0].title)
+      .setFooter(
+        `To generate an image of this decklist, use the ${prefix}deck-image command`
+      );
+    for (region of data[0].regions) {
+      var regionName = regionRef_to_regionName(region.name);
+      var emoji = region_to_emoji(regionName);
+      regionEmbed.addField(`${emoji} **${regionName}**`, region.cards, true);
+    }
+    embeds.push(regionEmbed);
+    var typeEmbed = new Discord.MessageEmbed()
+      .setTitle(data[1].title)
+      .setFooter(
+        `To generate an image of this decklist, use the ${prefix}deck-image command`
+      );
+    for (type in data[1].types) {
+      typeEmbed.addField(type, data[1].types[type], true);
+    }
+    embeds.push(typeEmbed);
+    return embeds;
+  } else {
+    return null;
+  }
+}
+
+function quick_deck_data(code) {
+  const deck = deck_translate(code);
+  if (deck !== null) {
+    var embed1_data = {
+      title: "",
+      regions: [],
+    };
+    var embed2_data = {
+      title: "",
+      types: {
+        champion: "",
+        unit: "",
+        spell: "",
+      },
+    };
+    var title = "";
+
+    var index = 0;
+
+    for (region in deck.regions) {
+      if (deck.regions[region].length > 0) {
+        embed1_data.regions.push({ name: region, cards: "" });
+        for (card of deck.regions[region]) {
+          embed1_data.regions[index].cards = embed1_data.regions[
+            index
+          ].cards.concat(
+            `\n${rarity_to_emoji(card.rarity)} **${card.count}** ${card.name}`
+          );
+        }
+        index++;
+      }
+    }
+
+    for (type in deck.types) {
+      if (deck.types[type].length > 0) {
+        for (card of deck.types[type]) {
+          embed2_data.types[type] = embed2_data.types[type].concat(
+            `\n**${card.count}** ${card.name}`
+          );
+        }
+      } else {
+        delete deck.types[type];
+      }
+    }
+
+    if (embed2_data.types.champion.length > 0) {
+      for (champ of deck.types.champion) {
+        title = title.concat(champ.name + " & ");
+      }
+    } else {
+      for (region of embed1_data.regions) {
+        var regionName = regionRef_to_regionName(region.name);
+        title = title.concat(regionName + " & ");
+      }
+    }
+    embed1_data.title = title.slice(0, -3);
+    embed2_data.title = title.slice(0, -3);
+
+    return [embed1_data, embed2_data];
+  } else {
+    return null;
+  }
+}
+
+function regionRef_to_regionName(regionRef) {
+  const obj = {
+    bilgewater: "Bilgewater",
+    demacia: "Demacia",
+    freljord: "Freljord",
+    ionia: "Ionia",
+    noxus: "Noxus",
+    piltoverzaun: "Piltover & Zaun",
+    shadowisles: "Shadow Isles",
+    none: "<no region>",
+  };
+  return obj[regionRef.toLowerCase()];
+}
+
+function send_deck_image(code, message) {
+  message.channel.send("Fetching deck image...");
+  fetch_image(code).then((image) => {
+    if (image) {
+      var link = `https://decks.wizra.cc/${code}`;
+      const embed = new Discord.MessageEmbed()
+        .setTitle("decks.wizra.cc")
+        .setURL(link)
+        .attachFiles([image])
+        .setImage(`attachment://${code}.png`);
+      message.channel.send(embed);
+    } else {
+      message.channel.send("Not a valid deck code");
+    }
+  });
 }
 
 function card_lookup(args) {
@@ -194,11 +355,11 @@ async function fetch_image(code) {
   if (fs.existsSync(`${__dirname}/${code}.png`)) {
     image = `${__dirname}/${code}.png`;
   } else {
-    /* enable this when testing on windows
+    /* enable this when testing on windows */
     const browser = await puppeteer.launch({
       ignoreDefaultArgs: ["--disable-extensions"],
-    });*/
-    /* enable this on production */
+    });
+    /* enable this on production
     const browser = await puppeteer.launch({
       executablePath: "chromium-browser",
     });
@@ -244,6 +405,6 @@ module.exports = {
   short_results,
   card_lookup,
   long_results,
-  fetch_image,
-  deck_translate,
+  send_deck_image,
+  quick_deck,
 };
