@@ -73,7 +73,7 @@ client.on("message", async (message) => {
 \n\`${prefix}card-lookup overwhelm\`: -looks for basic string matches in titles or card text or keywords (multiple keywords must be in the same order as on the card)
 \n\`${prefix}card Draven\`: -shows the exact card, use reactions to view associated cards
 \n\`${prefix}deck-image DECKCODE\`: -shows an image of the deck, using https://decks.wizra.cc
-\n\`${prefix}deck DECKCODE\`: -shows a simplified decklist of the cards, sorted by region then cost then name (WIP: currently same as deck-image)`;
+\n\`${prefix}deck DECKCODE\`: -shows a simplified decklist much more quickly than deck-image`;
     return message.channel.send(response_string);
   } else if (command === "card-lookup" || command === "card-search") {
     /*
