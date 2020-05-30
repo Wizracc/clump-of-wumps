@@ -355,11 +355,12 @@ async function fetch_image(code) {
   if (fs.existsSync(`${__dirname}/${code}.png`)) {
     image = `${__dirname}/${code}.png`;
   } else {
-    /* enable this when testing on windows */
+    /* enable this when testing on windows
     const browser = await puppeteer.launch({
       ignoreDefaultArgs: ["--disable-extensions"],
     });
-    /* enable this on production
+    /* */
+    /* enable this on production */
     const browser = await puppeteer.launch({
       executablePath: "chromium-browser",
     });
