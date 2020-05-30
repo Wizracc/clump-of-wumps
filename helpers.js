@@ -21,7 +21,7 @@ function deck_translate(code) {
       regions: {
         bilgewater: [],
         demacia: [],
-        freiljord: [],
+        freljord: [],
         ionia: [],
         noxus: [],
         piltoverzaun: [],
