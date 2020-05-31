@@ -36,7 +36,7 @@ function deck_translate(code) {
     for (const card of rawDeck) {
       const raw = { ...data.find((o) => o.cardCode === card.code) };
       const cardInfo = {
-        region: raw.regionRef,
+        region: raw.regionRef.toLowerCase(),
         name: raw.name,
         cost: raw.cost,
         count: card.count,
@@ -65,7 +65,7 @@ function quick_deck(code) {
       );
     for (region of data[0].regions) {
       var regionName = regionRef_to_regionName(region.name);
-      var emoji = region_to_emoji(regionName);
+      var emoji = region_to_emoji(region.name);
       regionEmbed.addField(`${emoji} **${regionName}**`, region.cards, true);
     }
     embeds.push(regionEmbed);
