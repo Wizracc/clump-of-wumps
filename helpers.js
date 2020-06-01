@@ -75,7 +75,9 @@ function quick_deck(code) {
         `To generate an image of this decklist, use the ${prefix}deck-image command`
       );
     for (type in data[1].types) {
-      typeEmbed.addField(type, data[1].types[type], true);
+      if (type.length !== "") {
+        typeEmbed.addField(type, data[1].types[type], true);
+      }
     }
     embeds.push(typeEmbed);
     return embeds;
@@ -125,11 +127,13 @@ function quick_deck_data(code) {
           );
         }
       } else {
-        delete deck.types[type];
+        delete embed2_data.types[type];
       }
     }
 
-    if (embed2_data.types.champion.length > 0) {
+    console.log(embed2_data.types);
+
+    if ('champion' in embed2_data.types) {
       for (champ of deck.types.champion) {
         title = title.concat(champ.name + " & ");
       }
