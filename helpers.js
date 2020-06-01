@@ -131,8 +131,6 @@ function quick_deck_data(code) {
       }
     }
 
-    console.log(embed2_data.types);
-
     if ('champion' in embed2_data.types) {
       for (champ of deck.types.champion) {
         title = title.concat(champ.name + " & ");
