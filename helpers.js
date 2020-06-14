@@ -131,7 +131,7 @@ function quick_deck_data(code) {
       }
     }
 
-    if ("champion" in embed2_data.types) {
+    if ('champion' in embed2_data.types) {
       for (champ of deck.types.champion) {
         title = title.concat(champ.name + " & ");
       }
@@ -211,8 +211,9 @@ function find_card(args) {
     }
   }
   var matchArray = [...matches].sort((a, b) => sort_cards(a, b, string));
-  if (data[0].name.toLowerCase() === "overgrown snapvine") {
-    matchArray = Array(10).fill(data[0]);
+  console.log(matchArray);
+  if(matchArray[0].name.toLowerCase() === "overgrown snapvine"){
+    matchArray = Array(10).fill(matchArray[0]);
   }
   return matchArray;
 }
