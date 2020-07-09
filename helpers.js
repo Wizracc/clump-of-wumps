@@ -212,7 +212,7 @@ function find_card(args) {
   }
   var matchArray = [...matches].sort((a, b) => sort_cards(a, b, string));
   if (
-    matchArray !== undefined &&
+    matchArray[0] !== undefined &&
     matchArray[0].name.toLowerCase() === "overgrown snapvine"
   ) {
     matchArray = Array(10).fill(matchArray[0]);
