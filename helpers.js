@@ -37,6 +37,7 @@ function deck_translate(code) {
         champion: [],
         unit: [],
         spell: [],
+        landmark: [],
       },
     };
     for (const card of rawDeck) {
