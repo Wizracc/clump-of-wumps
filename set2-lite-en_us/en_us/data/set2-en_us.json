@@ -1156,7 +1156,9 @@
   },
   {
     "associatedCards": [],
-    "associatedCardRefs": [],
+    "associatedCardRefs": [
+      "02PZ004"
+    ],
     "assets": [
       {
         "gameAbsolutePath": "http://dd.b.pvp.net/1_16_0/set2/en_us/img/cards/02BW014.png",
@@ -4496,8 +4498,8 @@
     ],
     "spellSpeed": "",
     "spellSpeedRef": "",
-    "rarity": "COMMON",
-    "rarityRef": "Common",
+    "rarity": "None",
+    "rarityRef": "None",
     "subtype": "",
     "subtypes": [],
     "supertype": "",

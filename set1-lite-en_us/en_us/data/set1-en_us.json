@@ -873,7 +873,12 @@
   },
   {
     "associatedCards": [],
-    "associatedCardRefs": [],
+    "associatedCardRefs": [
+      "01NX032",
+      "01NX048",
+      "01NX005",
+      "01NX030"
+    ],
     "assets": [
       {
         "gameAbsolutePath": "http://dd.b.pvp.net/1_16_0/set1/en_us/img/cards/01IO029.png",
@@ -5636,6 +5641,47 @@
   },
   {
     "associatedCards": [],
+    "associatedCardRefs": [
+      "01NX020T3",
+      "01NX020"
+    ],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/1_5_0/set1/en_us/img/cards/01NX020T2.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/1_5_0/set1/en_us/img/cards/01NX020T2-full.png"
+      }
+    ],
+    "region": "Noxus",
+    "regionRef": "Noxus",
+    "attack": 0,
+    "cost": 3,
+    "health": 0,
+    "description": "A battling ally <link=vocab.Strike><style=Vocab>strikes</style></link> a battling enemy.\r\nShuffle a <link=card.level1><style=AssociatedCard>Draven</style></link> into your deck.",
+    "descriptionRaw": "A battling ally strikes a battling enemy.\r\nShuffle a Draven into your deck.",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "\"I have the best job.\" - Draven",
+    "artistName": "Rafael Zanchetin",
+    "name": "Draven's Whirling Death",
+    "cardCode": "01NX020T2",
+    "keywords": [
+      "Fast"
+    ],
+    "keywordRefs": [
+      "Fast"
+    ],
+    "spellSpeed": "Fast",
+    "spellSpeedRef": "Fast",
+    "rarity": "None",
+    "rarityRef": "None",
+    "subtype": "",
+    "subtypes": [],
+    "supertype": "Champion",
+    "type": "Spell",
+    "collectible": false
+  },
+  {
+    "associatedCards": [],
     "associatedCardRefs": [],
     "assets": [
       {
@@ -7076,6 +7122,47 @@
     "type": "Spell",
     "collectible": true,
     "set": "Set1"
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [
+      "01NX038T2",
+      "01NX038"
+    ],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/1_5_0/set1/en_us/img/cards/01NX038T1.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/1_5_0/set1/en_us/img/cards/01NX038T1-full.png"
+      }
+    ],
+    "region": "Noxus",
+    "regionRef": "Noxus",
+    "attack": 0,
+    "cost": 5,
+    "health": 0,
+    "description": "Deal 4 to the enemy Nexus.\r\nShuffle a <link=card.level1><style=AssociatedCard>Darius</style></link> into your deck.",
+    "descriptionRaw": "Deal 4 to the enemy Nexus.\r\nShuffle a Darius into your deck.",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "\"Sometimes, it takes tactical genius to break a fortress. Sometimes, you just have to hit it harder.\" - Darius",
+    "artistName": "Max Grecke",
+    "name": "Darius's Decimate",
+    "cardCode": "01NX038T1",
+    "keywords": [
+      "Slow"
+    ],
+    "keywordRefs": [
+      "Slow"
+    ],
+    "spellSpeed": "Slow",
+    "spellSpeedRef": "Slow",
+    "rarity": "None",
+    "rarityRef": "None",
+    "subtype": "",
+    "subtypes": [],
+    "supertype": "Champion",
+    "type": "Spell",
+    "collectible": false
   },
   {
     "associatedCards": [],
@@ -12712,7 +12799,9 @@
   },
   {
     "associatedCards": [],
-    "associatedCardRefs": [],
+    "associatedCardRefs": [
+      "01IO013"
+    ],
     "assets": [
       {
         "gameAbsolutePath": "http://dd.b.pvp.net/1_16_0/set1/en_us/img/cards/01FR052T1.png",
@@ -15399,7 +15488,9 @@
   },
   {
     "associatedCards": [],
-    "associatedCardRefs": [],
+    "associatedCardRefs": [
+      "01NX022"
+    ],
     "assets": [
       {
         "gameAbsolutePath": "http://dd.b.pvp.net/1_16_0/set1/en_us/img/cards/01SI019.png",
