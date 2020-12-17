@@ -125,6 +125,7 @@ function quick_deck_data(code) {
         champion: "",
         unit: "",
         spell: "",
+        landmark: "",
       },
     };
     var title = "";
