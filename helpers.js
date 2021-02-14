@@ -70,7 +70,7 @@ function quick_deck(code) {
     var regionEmbed = new Discord.MessageEmbed()
       .setTitle(data[0].title)
       .setFooter(
-        `If you see any problems, message Wizracc#0574 to let them know`
+        `If you see any problems, message Wizracc#0001 to let them know`
       );
     for (region of data[0].regions) {
       var regionName = regionRef_to_regionName(region.name);
